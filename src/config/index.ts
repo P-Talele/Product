@@ -24,6 +24,7 @@ export enum Role {
 export const Model = {
   Seller: "seller",
   Country: "country",
-  State: 'state'
+  State: 'state',
+  Product: "product"
 }
 
