@@ -1,18 +1,19 @@
 
-// import { Router } from 'express';
-// import { UserController } from './controller';
-// import { authMiddleware } from '../../middlewares/auth.middleware';
-// import { requireRole } from '../../middlewares/role.middleware';
-// import { Role } from '../../config';
+import { Router } from 'express';
+import { SellerController } from './controller';
+import { authMiddleware } from '../../middlewares/auth.middleware';
+import { uploadimage } from '../../middlewares/multer.middleware'
+import { validateDTO } from './../../middlewares/validate.middleware'
+import { AddProductDto } from './dto/productDTO'
 
 
-// const router = Router();
-// const controller = new UserController();
+const router = Router();
+const controller = new SellerController();
 
 
-// router.get('/', authMiddleware, requireRole(Role.Admin), (req, res) => controller.list(req, res));
-// router.get('/:id', authMiddleware, requireRole(Role.Admin), (req, res) => controller.get(req, res));
-// router.put('/:id/role', authMiddleware, requireRole(Role.Admin), (req, res) => controller.updateRole(req, res));
+router.post('/add-product', authMiddleware, uploadimage, validateDTO(AddProductDto), (req, res) => controller.AddProduct(req, res));
+router.get('/product-list', authMiddleware, (req, res) => controller.ProductList(req, res));
+router.delete('/product-delete', authMiddleware, (req, res) => controller.ProductDelete(req, res));
 
 
-// export default router;
+export default router;

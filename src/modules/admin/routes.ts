@@ -18,7 +18,7 @@ const controller = new SellerController();
 //requireRole(Role.Admin), 
 //
 
-router.post('/seller', authMiddleware, requireRole(Role.Admin), uploadFile, (req, res) => controller.CreateSeller(req, res));
+router.post('/seller', authMiddleware, requireRole(Role.Admin), uploadFile, validateDTO(CreateSellerDTO), (req, res) => controller.CreateSeller(req, res));
 router.get('/seller', authMiddleware, requireRole(Role.Admin), (req, res) => controller.SellerList(req, res));
 
 

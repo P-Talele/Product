@@ -5,6 +5,7 @@ import { Role, Model } from '../config';
 
 export interface Product extends Document {
     Product_Name: string,
+    SellerId: Types.ObjectId,
     Product_Description: string,
     Brand_Name: string
     Detail: string,
@@ -14,6 +15,10 @@ export interface Product extends Document {
     updatedAt: Date;
 }
 const ProductSchema = new Schema<Product>({
+    SellerId: {
+        type: Schema.Types.ObjectId,
+        required: true,
+    },
     Product_Name: {
         type: String,
         required: true

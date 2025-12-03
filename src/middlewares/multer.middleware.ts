@@ -17,3 +17,10 @@ export const uploadFile = multer({
     fileFilter,
     limits: { fileSize: 5 * 1024 * 1024 }
 }).single("profile_src"); 
+
+
+export const uploadimage = multer({
+    storage,
+    fileFilter,
+    limits: { fileSize: 5 * 1024 * 1024 }
+}).single("Image"); 

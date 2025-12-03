@@ -1,76 +1,94 @@
-// import { Request, Response } from "express";
-// import { UserService } from "./service";
-// import { message } from "../../helper/messages";
+import { Request, Response } from "express";
+import { SellerService } from "./service";
+import { message } from "../../helper/messages";
+import { errorHandler } from "../../middlewares/error.middleware";
 
-// export class UserController {
-//     private service: UserService;
+export class SellerController {
+    private service: SellerService;
 
-//     constructor() {
-//         this.service = new UserService();
-//     }
+    constructor() {
+        this.service = new SellerService();
+    }
 
-//     async list(req: Request, res: Response) {
-//         try {
-//             const page = Number(req.query.page || 1);
-//             const limit = Number(req.query.limit || 20);
+    async AddProduct(req: Request, res: Response) {
+        try {
+            const { Product_Name, Product_Description, Brand_Name, Detail, Price } = req.body
 
-//             const data = await this.service.list(page, limit);
+            const Image = req.file
+            if (!Image) throw new Error("File is Required");
 
-//             return res.json({
-//                 code: 200,
-//                 success: true,
-//                 data
-//             });
-//         } catch (error: any) {
-//             return res.status(400).json({
-//                 code: 400,
-//                 success: false,
-//                 message: error.message
-//             });
-//         }
-//     }
 
-//     async get(req: Request, res: Response) {
-//         try {
-//             const user = await this.service.getById(req.params.id);
+            const data = await this.service.AddProduct(Product_Name, Product_Description, Brand_Name, Detail, Image, Price, req.user);
 
-//             if (!user) {
-//                 return res.status(404).json({
-//                     code: 404,
-//                     success: false,
-//                     message: message.user.User_not_found
-//                 });
-//             }
+            return res.json({
+                code: 200,
+                success: true,
+                data
+            });
+        } catch (error: any) {
 
-//             return res.json({
-//                 code: 200,
-//                 success: true,
-//                 data: user
-//             });
-//         } catch (error: any) {
-//             return res.status(400).json({
-//                 code: 400,
-//                 success: false,
-//                 message: error.message
-//             });
-//         }
-//     }
+            console.log("error", error)
+            return res.status(400).json({
+                code: 400,
+                success: false,
+                message: error.message
+            });
+        }
+    }
 
-//     async updateRole(req: Request, res: Response) {
-//         try {
-//             const updated = await this.service.updateRole(req.params.id, req.body.role);
 
-//             return res.json({
-//                 code: 200,
-//                 success: true,
-//                 data: updated
-//             });
-//         } catch (error: any) {
-//             return res.status(400).json({
-//                 code: 400,
-//                 success: false,
-//                 message: error.message
-//             });
-//         }
-//     }
-// }
+    async ProductList(req: Request, res: Response) {
+        try {
+            const { page, limit } = req.query
+
+
+
+            const data = await this.service.ProductList(page, limit, req.user);
+
+            return res.json({
+                code: 200,
+                success: true,
+                data
+            });
+        } catch (error: any) {
+
+            console.log("error", error)
+            return res.status(400).json({
+                code: 400,
+                success: false,
+                message: error.message
+            });
+        }
+    }
+
+
+    async ProductDelete(req: Request, res: Response) {
+        try {
+
+            const { _id } = req.body
+
+            if(!_id) throw new Error("ID is requred")
+
+            const data = await this.service.ProductDelete(_id);
+
+            return res.json({
+                code: 200,
+                message: "Product han been deleled succesfully.",
+                success: true,
+                data
+            });
+        } catch (error: any) {
+
+            console.log("error", error)
+            return res.status(400).json({
+                code: 400,
+                success: false,
+                message: error.message
+            });
+        }
+    }
+
+
+
+
+}

@@ -3,28 +3,23 @@ import { validate } from "class-validator";
 
 export class CreateSellerDTO {
     @IsNotEmpty({ message: "Name is required" })
-    @IsString({ message: "Name must be a string" })
-    name!: string;
+    name!: any;
 
-    @IsEmail({}, { message: "Invalid email format" })
-    email!: string;
+    @IsNotEmpty({ message: "Email is required" })
+    email!: any;
+    @IsNotEmpty({ message: "Password is required" })
+    password!: any;
 
-    @IsNotEmpty()
-    @MinLength(6, { message: "Password must be at least 6 characters" })
-    password!: string;
+    @IsNotEmpty({ message: "Mobile_No is required" })
+    mobile_No!: any;
 
-    @IsNotEmpty()
-    @Matches(/^\d{10,15}$/, { message: "Mobile number must be 10-15 digits" })
-    mobile_No!: string;
+    @IsNotEmpty({ message: "Country is required" })
+    country!: any;
 
-    @IsString({ message: "Country must be a string" })
-    country!: string;
-
-    @IsString({ message: "State must be a string" })
-    state!: string;
-
-    @IsString({ message: "Skills must be." })
-    skills!: string;
+    @IsNotEmpty({ message: "State is required" })
+    state!: any;
+    @IsNotEmpty({ message: "skills is required" })
+    skills!: any;
 }
 
 

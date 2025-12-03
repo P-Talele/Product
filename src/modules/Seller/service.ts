@@ -1,34 +1,73 @@
-// import { SellerModel } from '../../models/Seller';
-// import { Role } from '../../config';
+import { ProductModel } from '../../models/product';
+import { Role } from '../../config';
+import { CloudinaryService } from './../../services/cloudinary'
 
-// export class UserService {
-//     private sellerModel: typeof SellerModel;
 
-//     constructor() {
-//         this.userModel = SellerModel;
-//     }
+export class SellerService {
+    private productModel: typeof ProductModel;
+    private cloudinaryService = new CloudinaryService
 
-//     async list(page = 1, limit = 20) {
-//         const skip = (page - 1) * limit;
+    constructor() {
+        this.productModel = ProductModel;
+        this.cloudinaryService = new CloudinaryService
+    }
 
-//         const users = await this.userModel
-//             .find()
-//             .skip(skip)
-//             .limit(limit)
-//             .select('-password');
 
-//         const total = await this.userModel.countDocuments();
+    async AddProduct(Product_Name: string, Product_Description: string, Brand_Name: string, Detail: any, Image: any, Price: number, sellerId: any
+    ) {
 
-//         return { users, total };
-//     }
 
-//     async getById(id: string) {
-//         return this.userModel.findById(id).select('-password');
-//     }
+        let imageUrl: string | null = null;
+        if (Image) {
+            const result = await this.cloudinaryService.uploadFile(Image)
+            imageUrl = result.secure_url;
+        }
 
-//     async updateRole(id: string, role: Role.Admin | Role.Seller) {
-//         return this.userModel
-//             .findByIdAndUpdate(id, { role }, { new: true })
-//             .select('-password');
-//     }
-// }
+        const Product = await this.productModel.create({
+            SellerId: sellerId.id,
+            Product_Name,
+            Product_Description,
+            Brand_Name,
+            Detail,
+            Image: imageUrl,
+            Price,
+        });
+
+        return Product;
+
+    }
+    async ProductList(page: any, limit: any, sellerId: any) {
+
+        const Page = Number(page) || 1;
+        const Limit = Number(limit) || 10;
+        const skip = (Page - 1) * Limit;
+
+        const [data, total] = await Promise.all([
+            this.productModel
+                .find({ SellerId: sellerId.id })
+                .select({ __v: 0, SellerId: 0 })
+                .skip(skip)
+                .limit(Limit)
+                .lean(),
+
+            this.productModel.countDocuments({ SellerId: sellerId.id })
+        ]);
+
+        return { total, data };
+    }
+
+
+    async ProductDelete(productId: any) {
+        const ishas = await this.productModel.findOne({ _id: productId });
+
+        if (!ishas) {
+            const error: any = new Error("Product not found");
+            error.status = 404;
+            throw error;
+        }
+
+
+        const data = await this.productModel.findOneAndDelete({ _id: productId });
+    }
+
+}
